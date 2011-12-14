@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b5e6ddc2-54d9-4a86-a4ca-4ccb5427614c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Reader">
+      <UniqueIdentifier>{4361c399-c1bb-47ab-8f18-ef87bf2ac4d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Writer">
+      <UniqueIdentifier>{4adfb451-a784-44c3-89d1-46d6e107c5e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenNI">
+      <UniqueIdentifier>{19552c5b-dfa4-46d5-b542-c1badf9a495b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Res">
+      <UniqueIdentifier>{87bcf8b6-cfb5-425e-8137-95440ddc1d4a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnDeviceFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnDeviceFileReader.cpp">
+      <Filter>Source Files\Reader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnDeviceFileReaderBC.cpp">
+      <Filter>Source Files\Reader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnDeviceFileWriter.cpp">
+      <Filter>Source Files\Writer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnFileWriterStream.cpp">
+      <Filter>Source Files\Writer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnExportedFileDevice.cpp">
+      <Filter>Source Files\OpenNI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnFileDevice.cpp">
+      <Filter>Source Files\OpenNI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnFileDeviceBC.cpp">
+      <Filter>Source Files\OpenNI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceFile\XnFileOpenNiteImpl.cpp">
+      <Filter>Source Files\OpenNI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceFile\XnDeviceFile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceFile\XnDeviceFileReader.h">
+      <Filter>Source Files\Reader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceFile\XnDeviceFileReaderBC.h">
+      <Filter>Source Files\Reader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceFile\XnDeviceFileWriter.h">
+      <Filter>Source Files\Writer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceFile\XnFileWriterStream.h">
+      <Filter>Source Files\Writer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceFile\XnExportedFileDevice.h">
+      <Filter>Source Files\OpenNI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceFile\XnFileDevice.h">
+      <Filter>Source Files\OpenNI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceFile\XnNiInputStream.h">
+      <Filter>Source Files\OpenNI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Res\Resource-DDK.h">
+      <Filter>Res</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Res\DDK.rc">
+      <Filter>Res</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Res\mainicon.ico">
+      <Filter>Res</Filter>
+    </None>
+  </ItemGroup>
+</Project>

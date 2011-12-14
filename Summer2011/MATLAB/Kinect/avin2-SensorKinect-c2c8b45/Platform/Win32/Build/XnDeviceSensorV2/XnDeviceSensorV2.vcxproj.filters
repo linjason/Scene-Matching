@@ -1,0 +1,445 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1ad315aa-cd73-4b4a-9fc3-931186cdac67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Processing">
+      <UniqueIdentifier>{1043335a-5a8f-457e-9c80-fd9d07ab0dd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IO">
+      <UniqueIdentifier>{782880d1-f8dc-4962-b201-e8eba15aff5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataProcessing">
+      <UniqueIdentifier>{33d4fc1b-4287-4ddf-a62f-d7df652f5b57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataProcessing\Depth">
+      <UniqueIdentifier>{7271d718-16d3-422e-8681-72971477ca1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataProcessing\Image">
+      <UniqueIdentifier>{b27e2a55-6a6e-481d-8057-c3299426d005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataProcessing\Audio">
+      <UniqueIdentifier>{88476f14-6ca1-4612-b3df-dca98e12909c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataProcessing\IR">
+      <UniqueIdentifier>{5fc18bd0-027d-4da6-80f7-b4834b014e6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Streams">
+      <UniqueIdentifier>{8706ab30-98dc-4c21-83bd-2317a12a5b30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Firmware">
+      <UniqueIdentifier>{c9cc568e-bb74-45f8-8d68-1e1351828da5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ClientServer">
+      <UniqueIdentifier>{d59463b7-36d6-4c7e-b4d6-fe807dadce7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ClientServer\Client">
+      <UniqueIdentifier>{e07295d0-a2ef-4281-9d51-1e67a03ad060}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ClientServer\Server">
+      <UniqueIdentifier>{9fed0289-5596-4d50-817e-36eb6363c332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenNIImpl">
+      <UniqueIdentifier>{d222524f-bcc0-42a5-b0f0-27ce20c5b5f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Res">
+      <UniqueIdentifier>{ec848562-ccdb-45a5-aa5f-1b178cdaf81e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnCmosInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnDeviceSensor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnDeviceSensorInit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorFixedParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorFPS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\Bayer.cpp">
+      <Filter>Source Files\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\Registration.cpp">
+      <Filter>Source Files\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\Uncomp.cpp">
+      <Filter>Source Files\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\YUV.cpp">
+      <Filter>Source Files\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnDeviceSensorIO.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnDeviceSensorProtocol.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnDataProcessor.cpp">
+      <Filter>Source Files\DataProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnFrameStreamProcessor.cpp">
+      <Filter>Source Files\DataProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnStreamProcessor.cpp">
+      <Filter>Source Files\DataProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnWholePacketProcessor.cpp">
+      <Filter>Source Files\DataProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnDepthProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Depth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnPacked11DepthProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Depth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnPSCompressedDepthProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Depth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnUncompressedDepthProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Depth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnBayerImageProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnImageProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnJpegImageProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnJpegToRGBImageProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnPSCompressedImageProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnUncompressedBayerProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnUncompressedYUVImageProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnUncompressedYUVtoRGBImageProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnAudioProcessor.cpp">
+      <Filter>Source Files\DataProcessing\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnIRProcessor.cpp">
+      <Filter>Source Files\DataProcessing\IR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorAudioStream.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorDepthStream.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorImageStream.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorIRStream.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorStreamHelper.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSharedMemoryBufferPool.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnDataProcessorHolder.cpp">
+      <Filter>Source Files\Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnFirmwareCommands.cpp">
+      <Filter>Source Files\Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnFirmwareInfo.cpp">
+      <Filter>Source Files\Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnFirmwareStreams.cpp">
+      <Filter>Source Files\Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnHostProtocol.cpp">
+      <Filter>Source Files\Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorFirmware.cpp">
+      <Filter>Source Files\Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorFirmwareParams.cpp">
+      <Filter>Source Files\Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorClient.cpp">
+      <Filter>Source Files\ClientServer\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorClientStream.cpp">
+      <Filter>Source Files\ClientServer\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorServer.cpp">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorsManager.cpp">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnServerSensorInvoker.cpp">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnServerSession.cpp">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnExportedSensorDevice.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnExportedSensorGenerator.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnMultiPropChangedHandler.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorAudioGenerator.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorDepthGenerator.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorDevice.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorGenerator.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorImageGenerator.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorIRGenerator.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorMapGenerator.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorOpenNiteImpl.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorProductionNode.cpp">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnCmosInfo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnDeviceSensor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnDeviceSensorInit.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnParams.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorFixedParams.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorFPS.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\Bayer.h">
+      <Filter>Source Files\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\Registration.h">
+      <Filter>Source Files\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\Uncomp.h">
+      <Filter>Source Files\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\YUV.h">
+      <Filter>Source Files\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnDeviceSensorIO.h">
+      <Filter>Source Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnDeviceSensorProtocol.h">
+      <Filter>Source Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnDataProcessor.h">
+      <Filter>Source Files\DataProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnFrameStreamProcessor.h">
+      <Filter>Source Files\DataProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnStreamProcessor.h">
+      <Filter>Source Files\DataProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnWholePacketProcessor.h">
+      <Filter>Source Files\DataProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnDepthProcessor.h">
+      <Filter>Source Files\DataProcessing\Depth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnPacked11DepthProcessor.h">
+      <Filter>Source Files\DataProcessing\Depth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnPSCompressedDepthProcessor.h">
+      <Filter>Source Files\DataProcessing\Depth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnUncompressedDepthProcessor.h">
+      <Filter>Source Files\DataProcessing\Depth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnBayerImageProcessor.h">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnImageProcessor.h">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnJpegImageProcessor.h">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnJpegToRGBImageProcessor.h">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnPSCompressedImageProcessor.h">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnUncompressedBayerProcessor.h">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnUncompressedYUVImageProcessor.h">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnUncompressedYUVtoRGBImageProcessor.h">
+      <Filter>Source Files\DataProcessing\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnAudioProcessor.h">
+      <Filter>Source Files\DataProcessing\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnIRProcessor.h">
+      <Filter>Source Files\DataProcessing\IR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\IXnSensorStream.h">
+      <Filter>Source Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorAudioStream.h">
+      <Filter>Source Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorDepthStream.h">
+      <Filter>Source Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorImageStream.h">
+      <Filter>Source Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorIRStream.h">
+      <Filter>Source Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorStreamHelper.h">
+      <Filter>Source Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSharedMemoryBufferPool.h">
+      <Filter>Source Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnDataProcessorHolder.h">
+      <Filter>Source Files\Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnFirmwareCommands.h">
+      <Filter>Source Files\Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnFirmwareInfo.h">
+      <Filter>Source Files\Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnFirmwareStreams.h">
+      <Filter>Source Files\Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnHostProtocol.h">
+      <Filter>Source Files\Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorFirmware.h">
+      <Filter>Source Files\Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorFirmwareParams.h">
+      <Filter>Source Files\Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorClientServer.h">
+      <Filter>Source Files\ClientServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorClient.h">
+      <Filter>Source Files\ClientServer\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorClientStream.h">
+      <Filter>Source Files\ClientServer\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorServer.h">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorServerRunner.h">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorsManager.h">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnServerLogger.h">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnServerSensorInvoker.h">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnServerSession.h">
+      <Filter>Source Files\ClientServer\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnExportedSensorDevice.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnExportedSensorGenerator.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnMultiPropChangedHandler.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorAudioGenerator.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorDepthGenerator.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorDevice.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorGenerator.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorImageGenerator.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorIRGenerator.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorMapGenerator.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Source\XnDeviceSensorV2\XnSensorProductionNode.h">
+      <Filter>Source Files\OpenNIImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Res\Resource-DDK.h">
+      <Filter>Res</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Res\DDK.rc">
+      <Filter>Res</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Res\mainicon.ico">
+      <Filter>Res</Filter>
+    </None>
+  </ItemGroup>
+</Project>
