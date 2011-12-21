@@ -8,27 +8,37 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include <stdlib.h>
 #include <cstdio>
+#include <iostream>
+//#include <sstream>
+//#include <iomanip>
+//#include <fstream>
+//#include <string>
+#include <cmath>
+//#include <windows.h>
+#include <ctime>
+// for openGL
 #include <GL/glut.h>
 #include <GL/glext.h>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <fstream>
-#include <string>
-#include <windows.h>
-//#include <dirent.h>
+
+// for openCV
+#include <cv.h>
+#include <cxcore.h>
+#include <highgui.h>
+#include <dirent.h>
 
 using std::stringstream;
 using std::cout;
 using std::endl;
 using std::ends;
 using namespace std;
+using namespace cv;
 
 // GLUT CALLBACK functions
 void doStuff();
 void displayCB();
 void reshapeCB(int w, int h);
 
+// other function prototypes
 void initGL();
 int  initGLUT(int argc, char **argv);
 bool initSharedMem();
@@ -36,6 +46,8 @@ void clearSharedMem();
 void setCamera(float camera[9]);
 void draw3();
 void computeFaceNormal(GLfloat* v1, GLfloat* v2, GLfloat* v3, GLfloat* crossP);
+void initSceneDumpDir();
+
 
 // global variables
 void *font = GLUT_BITMAP_8_BY_13;
@@ -55,7 +67,17 @@ PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements = 0;
 
 // camera params read in from file
 float fov_vertical;   // fov of SU scene
-float aspect_ratio;   // aspect ratio of uiuc image
+float aspect_ratio;   // aspect ratio of uiuc image, only used when reading in photomatched scenes, otherwise aspect ratio is that of clutter mask
+
+// directory of SKP scene dump files to read in and render
+#define SCENE_DUMP_DIR ("D:/scenes/")
+DIR *dir; // the directory
+struct dirent *ent;// the file entry
+
+int currWidth; // size of the clutter mask, rendered scene size is supposed to be this size too
+int currHeight;
+
+Mat m; // the clutter mask to compare scenes to
 
 // variables for reading in text file and storing vertices/edges info
 GLfloat*** vertices;
@@ -66,6 +88,8 @@ int** numEdgesForFace;
 int numComps;
 FILE *f;
 
+
+// variables used to render texture (original uiuc image) on top of scene (from Google, not used now)
 GLubyte* bitmap;
 int bitmap_w;
 int bitmap_h;
@@ -159,17 +183,21 @@ void draw3()
 	for (i=0;i<numComps;i++){// for each scene component
 		for (j=0;j<numFacesForComp[i];j++)// for each face in the scene component
 		{
-			/*
+			
+			// binary mask
+
 			// draw faces in red
 			glVertexPointer(3, GL_FLOAT, 0, vertices[i][j]);// give OpenGL the vertices for this face
 			glColor3f(1.0f, 0.0f, 0.0f);// red
 			// give OpenGL the edges for this face, and also the number of edges for this face
 			glDrawElements(GL_TRIANGLES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
 			// draw face boundaries in black
-			glColor3f(0.0f, 0.0f, 0.0f);// black
+			glColor3f(1.0f, 1.0f, 1.0f);// black
 			glDrawElements(GL_LINES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
-			*/
+			
 
+			// surface normals
+			/*
 			glVertexPointer(3, GL_FLOAT, 0, vertices[i][j]);// give OpenGL the vertices for this face
 			GLfloat v1[3]={vertices[i][j][0],vertices[i][j][1],vertices[i][j][2]};
 			GLfloat v2[3]={vertices[i][j][3],vertices[i][j][4],vertices[i][j][5]};
@@ -182,6 +210,7 @@ void draw3()
 			// draw face boundaries in black
 			//glColor3f(0.0f, 0.0f, 0.0f);// black
 			//glDrawElements(GL_LINES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
+			*/
 		}
 	}
 	glPopMatrix();
@@ -223,6 +252,8 @@ fclose(fp);
 ///////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
+	int t=clock();
+	cout<<"time:"<<t<<endl;
 	initSharedMem();
 
 	// init GLUT and GL
@@ -245,22 +276,10 @@ int main(int argc, char **argv)
 	// window will be shown and display callback is triggered by events
 	// NOTE: this call never return main().
 
-	/*DIR *dir;
-	struct dirent *ent;
-	dir = opendir ("c:\\src\\");
-	if (dir != NULL) {
-
-	// print all the files and directories within directory 
-	while ((ent = readdir (dir)) != NULL) {
-	printf ("%s\n", ent->d_name);
-	}
-	closedir (dir);
-	} else {
-	//could not open directory 
-	perror ("");
-	return EXIT_FAILURE;
-	}*/
 	cout<<"entering main\n";
+
+	initSceneDumpDir();
+
 	glutMainLoop(); /* Start GLUT event-processing loop */
 
 	return 0;
@@ -279,7 +298,7 @@ int initGLUT(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_STENCIL);   // display mode
 	glutInitWindowSize(600, 600);               // window size
-	glutInitWindowPosition(100, 100);           // window location
+	glutInitWindowPosition(200, 200);           // window location
 
 	// finally, create a window with openGL context
 	// Window will not displayed until glutMainLoop() is called
@@ -287,6 +306,9 @@ int initGLUT(int argc, char **argv)
 	int handle = glutCreateWindow(argv[0]);     // param is the title of window
 
 	// register GLUT callback functions
+
+	// the event loop should be in the following order: doStuff(read in and initialize values and parameters), reshape, display 
+	// I do not have absolute control over the sequence of events but the sequence has been correct in my tests
 	glutDisplayFunc(displayCB);
 	glutReshapeFunc(reshapeCB);
 	glutIdleFunc(doStuff);
@@ -302,7 +324,7 @@ void initGL()
 {
 	glShadeModel(GL_FLAT);                    // shading mathod: GL_SMOOTH or GL_FLAT
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);      // 4-byte pixel alignment
-	glPixelStorei(GL_PACK_ALIGNMENT, 1); 
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);     // 1-byte pixel alignment
 
 	// enable /disable features
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -312,7 +334,7 @@ void initGL()
 	glPolygonMode(GL_BACK, GL_FILL);
 	glFrontFace(GL_CW);
 
-	glClearColor(1, 1, 1, 0);                   // background color
+	glClearColor(0, 0, 0, 0);                   // background color
 	glClearDepth(1.0f);                         // 0 is near, 1 is far
 	glDepthFunc(GL_LEQUAL);
 
@@ -361,32 +383,45 @@ void setCamera(float camera[9])
 //=============================================================================
 // CALLBACKS
 //=============================================================================
-int i=0;
+int ii=-1;
 void doStuff()
 {
-	cout<<"doStuff\n";
-	//Sleep(8000);
-	i++;
-	//if (i>20)
-	//	exit(1);
-	if (i%2==0)
-		f=fopen("D:/a.txt","r");
+	//cout<<"doStuff ";
+	/*ii++;
+	if (ii%2==0)
+		f=fopen("D:/scenes/uiuc103.txt","r");
 	else
-		f=fopen("D:/uiuc043.txt","r");
+		f=fopen("D:/uiuc043.txt","r");*/
+	do{
+		ent = readdir(dir);
+		if (ent==NULL){
+			int t=clock();
+			cout<<"time:"<<t<<endl;
+			Sleep(10000000);
+		}
+	}
+	while(ent->d_type!=DT_REG);
+	//cout<<ent->d_name<<" ";
+	char* fileName=(char*)malloc(50);
+	strcpy(fileName,"D:/scenes/");
+	strcat(fileName,ent->d_name);
+	cout<<fileName;
+	f=fopen(fileName,"r");
+
 	fscanf(f,"%f",&aspect_ratio);
 	fscanf(f,"%f",&fov_vertical);
-
+	
 	float cameraParams[9];
 	int k=0;
 	for (k=0;k<9;k++)
 	{
 		fscanf(f,"%f",&(cameraParams[k]));
-	}
+	}	
 	setCamera(cameraParams);
-	if (i%2==0)
-		glutReshapeWindow(600*(aspect_ratio),600);
-	else
-		glutReshapeWindow(1200*(aspect_ratio),1200);
+	//if (i%2==0)
+		//glutReshapeWindow(600*(aspect_ratio),600);
+	//else
+		//glutReshapeWindow(1200*(aspect_ratio),1200);
 	
 	// cameraParams[0,1,2] - eye(x,y,z), cameraParams[3,4,5] - target(x,y,z)
 	//setCamera(cameraParams[0],cameraParams[1],cameraParams[2],
@@ -395,7 +430,28 @@ void doStuff()
 	readInValues();
 	fclose(f);
 
+	m=imread("D:/clutter_mask.png",-1);
+	CV_Assert(m.type() == CV_8UC1);
+	if(m.data==NULL) cout<<"Error reading in clutter mask\n";
+	//cout<<m.rows<<" "<<m.cols<<" "<<m.channels()<<" ";
+	/*FILE* out=fopen("D:/e.txt","w");
+	for(int i = 0; i < m.rows; i++) {
+		 const uchar* mi = m.ptr(i);
+    for(int j = 0; j < m.cols; j++){
+            fprintf(out,"%d\n",mi[j]);
+		}
+	 }
+	fclose(out);*/
+
+	currWidth=m.cols;
+	currHeight=m.rows;
+	glutReshapeWindow(m.cols,m.rows);
+	reshapeCB(m.cols,m.rows);
+	glutPostRedisplay();
+	//glutReshapeWindow(aspect_ratio*600,600);
+	//reshapeCB(aspect_ratio*600,600);
 }
+
 /*
 void displayCB()
 {
@@ -416,26 +472,18 @@ glPopMatrix();
 
 glutSwapBuffers();
 
-
-FILE * out = fopen("D:/d.txt","w");
-unsigned char *pixelData=(unsigned char*)malloc(799*600*aspect_ratio*3);
-memset(pixelData,123,1000);
-glReadBuffer(GL_FRONT);
-glReadPixels(0,0,799,600,GL_RGB,GL_UNSIGNED_BYTE,pixelData);
-for (int i =0;i<600*799*3+10;i++)
-{
-fprintf(out,"%d\n",pixelData[i]);
-}
 }
 */
 
 void displayCB()
 {
-	cout<<"display\n";
+	//cout<<"display ";
 	/*
 	// Draw a full screen texture.
 	glEnable(GL_TEXTURE_2D);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bitmap_w, bitmap_h, 0, GL_BGR, GL_UNSIGNED_BYTE, bitmap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bitmap_w, bitmap_h, 0, GL_BGR, 
+
+	GL_UNSIGNED_BYTE, bitmap);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -475,12 +523,65 @@ void displayCB()
 
 	draw3();        // with glDrawElements()
 
-	glutSwapBuffers();
+	glutSwapBuffers(); // display the buffer we just drew
+
+	// make sure that the current window size is the same as the clutter mask
+	assert(currWidth==glutGet(GLUT_WINDOW_WIDTH));
+	assert(currHeight==glutGet(GLUT_WINDOW_HEIGHT));
+
+	// output the SKP rendered scene information
+
+	char* outFileName=(char*)malloc(50);
+	strcpy(outFileName,"D:/");
+	strcat(outFileName,ent->d_name);
+	//FILE * out = fopen(outFileName,"w");
+
+	//FILE * out = fopen("D:/d.txt","w");
+	unsigned char *pixelData=(unsigned char*)malloc(currWidth*currHeight);
+	//memset(pixelData,123,1000);
+	
+	// read the SKP scene from the buffer
+	glReadBuffer(GL_FRONT);
+	glReadPixels(0,0,currWidth,currHeight,GL_RED,GL_UNSIGNED_BYTE,pixelData);
+	/*for (int i=0;i<currWidth*currHeight;i++)
+	{
+		fprintf(out,"%d\n",pixelData[i]);
+	}
+	fclose(out);*/
+
+	// convert 1D matrix pixelData to 2D, rows going from top of image to bottom, the same as the clutter mask openCV Mat m
+	int pixelDataIdx=0;
+	uchar** pixelData2D=new uchar*[currHeight];
+	for(int i=0; i<currHeight; i++)
+		pixelData2D[i]=new uchar[currWidth];
+	for (int i=currHeight-1;i>=0;i--)// fill in 2D array from bottom to top
+	{
+		for (int j=0;j<currWidth;j++)
+		{
+			pixelData2D[i][j]=pixelData[pixelDataIdx];
+				pixelDataIdx++;
+		}
+	}
+
+	// compare the SKP scene with the clutter mask (global variable m)
+	double SSD=0;
+	for(int i = 0; i < m.rows; i++) {
+		 const uchar* mi = m.ptr(i);
+		 for(int j = 0; j < m.cols; j++){
+			 //fprintf(out,"%d\n",mi[j]);
+			 SSD+=std::abs((double)((mi[j])-pixelData2D[i][j]));
+		 }
+	 }
+
+	cout.precision(10);
+	cout<<"....done, score is "<<SSD<<'\n';
+	if (ii==1)
+		Sleep(100000);
 }
 
 void reshapeCB(int w, int h)
 {
-	cout<<"reshape"<<w<<h<<"\n";
+	//cout<<"reshape"<<w<<h<<" ";
 	// set viewport to be the entire window
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
@@ -495,3 +596,14 @@ void reshapeCB(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+//////////////////////////////////////////////////////HELPER FUNCTIONS
+void initSceneDumpDir()
+{
+	/* open directory stream */
+	dir = opendir(SCENE_DUMP_DIR);
+	if (dir==NULL)
+	{
+		closedir (dir);
+		printf("FATAL ERROR IN INITSCENEDUMPDIR, DIR IS NULL\n");
+	}
+}
