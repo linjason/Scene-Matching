@@ -26,10 +26,6 @@
 #include <highgui.h>
 #include <dirent.h>
 
-using std::stringstream;
-using std::cout;
-using std::endl;
-using std::ends;
 using namespace std;
 using namespace cv;
 
@@ -47,18 +43,17 @@ void setCamera(float camera[9]);
 void draw3();
 void computeFaceNormal(GLfloat* v1, GLfloat* v2, GLfloat* v3, GLfloat* crossP);
 void initSceneDumpDir();
-
+void initCameraParamsAndClutterMask();
+void findSceneBounds(float* minBound, float* maxBound);
 
 // global variables
-void *font = GLUT_BITMAP_8_BY_13;
+//void *font = GLUT_BITMAP_8_BY_13;
 bool mouseLeftDown;
 bool mouseRightDown;
 bool mouseMiddleDown;
-float mouseX, mouseY;
 float cameraAngleX;
 float cameraAngleY;
 float cameraDistance;
-int drawMode = 0;
 int maxVertices;
 int maxIndices;
 
@@ -68,16 +63,17 @@ PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements = 0;
 // camera params read in from file
 float fov_vertical;   // fov of SU scene
 float aspect_ratio;   // aspect ratio of uiuc image, only used when reading in photomatched scenes, otherwise aspect ratio is that of clutter mask
+float* cameraParams;  // camera parameters read in from file
 
 // directory of SKP scene dump files to read in and render
-#define SCENE_DUMP_DIR ("D:/scenes/")
+#define SCENE_DUMP_DIR ("D:/scenes/skp/")
 DIR *dir; // the directory
 struct dirent *ent;// the file entry
 
 int currWidth; // size of the clutter mask, rendered scene size is supposed to be this size too
 int currHeight;
 
-Mat m; // the clutter mask to compare scenes to
+Mat m; // the clutter mask to compare scenes to, in OpenCV Mat format
 
 // variables for reading in text file and storing vertices/edges info
 GLfloat*** vertices;
@@ -100,8 +96,8 @@ int bitmap_bpp;
 // read in vertices and edges information from text file generated from MATLAB (SU vertices/edges format)
 // the file contains the number of components in the scene, the number of faces in each component, the vertices of each
 // face and the edges of each face, separated by character delimiters
-// polygon info stored using two 3D arrays, first dim is components, second dim is vertices/edges, third dim is  
-// coordinates of vertices/which edges to draw for each face(triangles)
+// polygon info stored using two 3D arrays, first dim is components, second dim is faces, third dim is  
+// coordinates of vertices/which edges to draw for each face
 void readInValues()
 {
 	int compIndex=0;
@@ -154,7 +150,7 @@ void readInValues()
 				break;
 			numEdgesForFace[compIndex][faceIndex]=(numEdges);
 			// stores all the edges for face faceIndex of component compIndex (obtained from SU's mesh.polygons)
-			edges[compIndex][faceIndex]=(GLubyte*)malloc(sizeof(GLubyte)*(numEdges+1));
+			edges[compIndex][faceIndex]=(GLubyte*)malloc(sizeof(GLubyte)*(numEdges));
 			j=0;
 			// read in all the edges for face faceIndex of component compIndex
 			while(fscanf(f,"%d",&in)==1)
@@ -179,9 +175,9 @@ void draw3()
 	// enable and specify pointers to vertex arrays
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glPushMatrix();
-	int i=0,j;
-	for (i=0;i<numComps;i++){// for each scene component
-		for (j=0;j<numFacesForComp[i];j++)// for each face in the scene component
+
+	for (int i=0;i<numComps;i++){// for each scene component
+		for (int j=0;j<numFacesForComp[i];j++)// for each face in the scene component
 		{
 			
 			// binary mask
@@ -191,8 +187,8 @@ void draw3()
 			glColor3f(1.0f, 0.0f, 0.0f);// red
 			// give OpenGL the edges for this face, and also the number of edges for this face
 			glDrawElements(GL_TRIANGLES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
-			// draw face boundaries in black
-			glColor3f(1.0f, 1.0f, 1.0f);// black
+			// draw face boundaries in white
+			glColor3f(1.0f, 1.0f, 1.0f);// white
 			glDrawElements(GL_LINES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
 			
 
@@ -229,6 +225,7 @@ void computeFaceNormal(GLfloat* v1, GLfloat* v2, GLfloat* v3, GLfloat* crossP)
 		crossP[i]/=crossPMag;
 }
 
+// this function from Google SKP person
 /*
 void initTexture() {
 // Rather than decompressing our jpeg, I've written it to a simple raw file as
@@ -271,7 +268,7 @@ int main(int argc, char **argv)
 
 	// get function pointer to glDrawRangeElements
 	glDrawRangeElements = (PFNGLDRAWRANGEELEMENTSPROC)wglGetProcAddress("glDrawRangeElements");
-
+	
 	// the last GLUT call (LOOP)
 	// window will be shown and display callback is triggered by events
 	// NOTE: this call never return main().
@@ -279,7 +276,7 @@ int main(int argc, char **argv)
 	cout<<"entering main\n";
 
 	initSceneDumpDir();
-
+	initCameraParamsAndClutterMask();
 	glutMainLoop(); /* Start GLUT event-processing loop */
 
 	return 0;
@@ -307,8 +304,9 @@ int initGLUT(int argc, char **argv)
 
 	// register GLUT callback functions
 
-	// the event loop should be in the following order: doStuff(read in and initialize values and parameters), reshape, display 
+	// the event loop should be in the following order: doStuff(read in and initialize values and parameters), reshape, display, then doStuff...
 	// I do not have absolute control over the sequence of events but the sequence has been correct in my tests
+	// I cannot combine the three functions into the display callback because I can't change camera params, screen sizes etc in the display function *******NEED TO VERIFY IF THIS IS TRUE****
 	glutDisplayFunc(displayCB);
 	glutReshapeFunc(reshapeCB);
 	glutIdleFunc(doStuff);
@@ -337,10 +335,6 @@ void initGL()
 	glClearColor(0, 0, 0, 0);                   // background color
 	glClearDepth(1.0f);                         // 0 is near, 1 is far
 	glDepthFunc(GL_LEQUAL);
-
-	// read in camera params, eye and target from file
-
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -383,15 +377,10 @@ void setCamera(float camera[9])
 //=============================================================================
 // CALLBACKS
 //=============================================================================
-int ii=-1;
 void doStuff()
 {
-	//cout<<"doStuff ";
-	/*ii++;
-	if (ii%2==0)
-		f=fopen("D:/scenes/uiuc103.txt","r");
-	else
-		f=fopen("D:/uiuc043.txt","r");*/
+	cout<<"doStuff ";
+	// iterate through all the SKP scenes in the directory until no more scenes, then sleep
 	do{
 		ent = readdir(dir);
 		if (ent==NULL){
@@ -401,55 +390,32 @@ void doStuff()
 		}
 	}
 	while(ent->d_type!=DT_REG);
-	//cout<<ent->d_name<<" ";
-	char* fileName=(char*)malloc(50);
-	strcpy(fileName,"D:/scenes/");
+
+	// construct the file name of the scene dump text file and open it
+	char fileName[50]=SCENE_DUMP_DIR;
 	strcat(fileName,ent->d_name);
-	cout<<fileName;
+	cout<<fileName<<endl;
 	f=fopen(fileName,"r");
 
-	fscanf(f,"%f",&aspect_ratio);
-	fscanf(f,"%f",&fov_vertical);
-	
-	float cameraParams[9];
-	int k=0;
-	for (k=0;k<9;k++)
-	{
-		fscanf(f,"%f",&(cameraParams[k]));
-	}	
-	setCamera(cameraParams);
-	//if (i%2==0)
-		//glutReshapeWindow(600*(aspect_ratio),600);
-	//else
-		//glutReshapeWindow(1200*(aspect_ratio),1200);
-	
-	// cameraParams[0,1,2] - eye(x,y,z), cameraParams[3,4,5] - target(x,y,z)
-	//setCamera(cameraParams[0],cameraParams[1],cameraParams[2],
-	//cameraParams[3],cameraParams[4],cameraParams[5]);
 	// read in vertices info from MATLAB dump
 	readInValues();
 	fclose(f);
 
-	m=imread("D:/clutter_mask.png",-1);
-	CV_Assert(m.type() == CV_8UC1);
-	if(m.data==NULL) cout<<"Error reading in clutter mask\n";
-	//cout<<m.rows<<" "<<m.cols<<" "<<m.channels()<<" ";
-	/*FILE* out=fopen("D:/e.txt","w");
-	for(int i = 0; i < m.rows; i++) {
-		 const uchar* mi = m.ptr(i);
-    for(int j = 0; j < m.cols; j++){
-            fprintf(out,"%d\n",mi[j]);
-		}
-	 }
-	fclose(out);*/
-
+	// construct camera params from params about this uiuc image that is read in
+	// *****************you'll need to change this because your camera params are different from mine
+	setCamera(cameraParams);
+	
+	// find the min and max bounds for the scene, may be useful in obtaining camera params
+	float* minBound=new float[3];
+	float* maxBound=new float[3];
+	findSceneBounds(minBound, maxBound);
+	//cout<<minBound[0]<<" "<<minBound[1]<<" "<<minBound[2]<<" "<<maxBound[0]<<" "<<maxBound[1]<<" "<<maxBound[2]<<endl;
+	
 	currWidth=m.cols;
 	currHeight=m.rows;
 	glutReshapeWindow(m.cols,m.rows);
 	reshapeCB(m.cols,m.rows);
 	glutPostRedisplay();
-	//glutReshapeWindow(aspect_ratio*600,600);
-	//reshapeCB(aspect_ratio*600,600);
 }
 
 /*
@@ -477,7 +443,7 @@ glutSwapBuffers();
 
 void displayCB()
 {
-	//cout<<"display ";
+	cout<<"display ";
 	/*
 	// Draw a full screen texture.
 	glEnable(GL_TEXTURE_2D);
@@ -528,28 +494,26 @@ void displayCB()
 	// make sure that the current window size is the same as the clutter mask
 	assert(currWidth==glutGet(GLUT_WINDOW_WIDTH));
 	assert(currHeight==glutGet(GLUT_WINDOW_HEIGHT));
-
-	// output the SKP rendered scene information
-
-	char* outFileName=(char*)malloc(50);
-	strcpy(outFileName,"D:/");
-	strcat(outFileName,ent->d_name);
-	//FILE * out = fopen(outFileName,"w");
-
-	//FILE * out = fopen("D:/d.txt","w");
-	unsigned char *pixelData=(unsigned char*)malloc(currWidth*currHeight);
-	//memset(pixelData,123,1000);
 	
 	// read the SKP scene from the buffer
+	unsigned char *pixelData=(unsigned char*)malloc(currWidth*currHeight);
 	glReadBuffer(GL_FRONT);
 	glReadPixels(0,0,currWidth,currHeight,GL_RED,GL_UNSIGNED_BYTE,pixelData);
-	/*for (int i=0;i<currWidth*currHeight;i++)
+	
+	// output the SKP rendered scene information, DEBUGGING ONLY
+	/*char* outFileName=(char*)malloc(50);
+	strcpy(outFileName,"D:/");
+	strcat(outFileName,ent->d_name);
+	FILE * out = fopen(outFileName,"w");
+	for (int i=0;i<currWidth*currHeight;i++)
 	{
 		fprintf(out,"%d\n",pixelData[i]);
 	}
 	fclose(out);*/
 
-	// convert 1D matrix pixelData to 2D, rows going from top of image to bottom, the same as the clutter mask openCV Mat m
+	// convert 1D array pixelData to 2D, rows going from top of image to bottom, the same as the clutter mask openCV Mat m
+	// glReadPixels returns pixels starting from lower left corner of rendered image, going horizontally then up, so we need to 
+	// reverse row ordering to go from top to bottom
 	int pixelDataIdx=0;
 	uchar** pixelData2D=new uchar*[currHeight];
 	for(int i=0; i<currHeight; i++)
@@ -563,7 +527,7 @@ void displayCB()
 		}
 	}
 
-	// compare the SKP scene with the clutter mask (global variable m)
+	// compare the SKP scene with the clutter mask (global variable m) **************scoring needs to be enhanced
 	double SSD=0;
 	for(int i = 0; i < m.rows; i++) {
 		 const uchar* mi = m.ptr(i);
@@ -575,13 +539,11 @@ void displayCB()
 
 	cout.precision(10);
 	cout<<"....done, score is "<<SSD<<'\n';
-	if (ii==1)
-		Sleep(100000);
 }
 
 void reshapeCB(int w, int h)
 {
-	//cout<<"reshape"<<w<<h<<" ";
+	cout<<"reshape: "<<w<<"*"<<h<<" ";
 	// set viewport to be the entire window
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
@@ -604,6 +566,66 @@ void initSceneDumpDir()
 	if (dir==NULL)
 	{
 		closedir (dir);
-		printf("FATAL ERROR IN INITSCENEDUMPDIR, DIR IS NULL\n");
+		cout<<"FATAL ERROR IN INITSCENEDUMPDIR, DIR IS NULL"<<endl;
 	}
+}
+
+void initCameraParamsAndClutterMask()
+{
+	cout<<"initCameraParamsAndClutterMask"<<endl;
+	// init camera params for the UIUC image we want to match
+	FILE* cameraParamsFile=fopen("D:/cameraParams.txt","r");
+	
+	fscanf(cameraParamsFile,"%f",&aspect_ratio);
+	fscanf(cameraParamsFile,"%f",&fov_vertical);
+	
+	cameraParams=new float[9];
+	int k=0;
+	for (k=0;k<9;k++)
+	{
+		fscanf(cameraParamsFile,"%f",&(cameraParams[k]));
+	}	
+	fclose(cameraParamsFile);
+
+
+	// init the clutter mask of the UIUC image
+	m=imread("D:/clutter_mask.png",-1);
+	CV_Assert(m.type() == CV_8UC1);
+	if(m.data==NULL) 
+		cout<<"Error reading in clutter mask"<<endl;
+
+	// DEBUGGING
+	//cout<<m.rows<<" "<<m.cols<<" "<<m.channels()<<" ";
+	/*FILE* out=fopen("D:/e.txt","w");
+	for(int i = 0; i < m.rows; i++) {
+		 const uchar* mi = m.ptr(i);
+    for(int j = 0; j < m.cols; j++){
+            fprintf(out,"%d\n",mi[j]);
+		}
+	 }
+	fclose(out);*/
+}
+
+// finds the smallest and largest x, y and z values of the current scene's vertices
+void findSceneBounds(float* minBound, float* maxBound)
+{
+	for (int i=0;i<3;i++)
+	{
+		minBound[i]=FLT_MAX;
+		maxBound[i]=-FLT_MAX;
+	}
+	for (int i=0;i<numComps;i++)
+		{
+			for (int j=0;j<numFacesForComp[i];j++)
+			{
+				for (int k=0;k<numVerticesForFace[i][j];k++)
+				{ 
+					if (vertices[i][j][k]<minBound[k%3])
+						minBound[k%3]=vertices[i][j][k];
+					if (vertices[i][j][k]>maxBound[k%3])
+						maxBound[k%3]=vertices[i][j][k];
+				}
+			}
+	}
+	//cout<<minBound[0]<<" "<<minBound[1]<<" "<<minBound[2]<<" "<<maxBound[0]<<" "<<maxBound[1]<<" "<<maxBound[2]<<endl;
 }
