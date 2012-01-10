@@ -499,7 +499,6 @@ void initCameraParamsAndClutterMask() {
 
 
   // init the clutter mask of the UIUC image
-  //m=imread("D:/clutter_mask.png",-1);
   m=imread("clutter_mask.png",-1);
   CV_Assert(m.type() == CV_8UC1);
   if (m.data==NULL)
