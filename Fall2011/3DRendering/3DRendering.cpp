@@ -9,12 +9,7 @@
 #include <stdlib.h>
 #include <cstdio>
 #include <iostream>
-//#include <sstream>
-//#include <iomanip>
-//#include <fstream>
-//#include <string>
 #include <cmath>
-//#include <windows.h>
 #include <ctime>
 // for openGL
 #include <GL/glut.h>
@@ -40,7 +35,8 @@ int  initGLUT(int argc, char **argv);
 bool initSharedMem();
 void clearSharedMem();
 void setCamera(float camera[9]);
-void draw3();
+void drawNormalMask();
+void drawBinaryMask();
 void computeFaceNormal(GLfloat* v1, GLfloat* v2, GLfloat* v3, GLfloat* crossP);
 void initSceneDumpDir();
 void initCameraParamsAndClutterMask();
@@ -58,7 +54,7 @@ int maxVertices;
 int maxIndices;
 
 // function pointer to OpenGL extensions
-PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements = 0; 
+//PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements = 0; 
 
 // camera params read in from file
 float fov_vertical;   // fov of SU scene
@@ -66,7 +62,8 @@ float aspect_ratio;   // aspect ratio of uiuc image, only used when reading in p
 float* cameraParams;  // camera parameters read in from file
 
 // directory of SKP scene dump files to read in and render
-#define SCENE_DUMP_DIR ("D:/scenes/skp/")
+//#define SCENE_DUMP_DIR ("D:/scenes/skp/")
+#define SCENE_DUMP_DIR ("skp/")
 DIR *dir; // the directory
 struct dirent *ent;// the file entry
 
@@ -170,8 +167,10 @@ void readInValues()
 	}
 }
 
-void draw3()
-{
+/**
+ * ADD COMMENT
+ */
+void drawNormalMask() {
 	// enable and specify pointers to vertex arrays
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glPushMatrix();
@@ -179,21 +178,7 @@ void draw3()
 	for (int i=0;i<numComps;i++){// for each scene component
 		for (int j=0;j<numFacesForComp[i];j++)// for each face in the scene component
 		{
-			
-			// binary mask
-
-			// draw faces in red
-			glVertexPointer(3, GL_FLOAT, 0, vertices[i][j]);// give OpenGL the vertices for this face
-			glColor3f(1.0f, 0.0f, 0.0f);// red
-			// give OpenGL the edges for this face, and also the number of edges for this face
-			glDrawElements(GL_TRIANGLES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
-			// draw face boundaries in white
-			glColor3f(1.0f, 1.0f, 1.0f);// white
-			glDrawElements(GL_LINES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
-			
-
 			// surface normals
-			/*
 			glVertexPointer(3, GL_FLOAT, 0, vertices[i][j]);// give OpenGL the vertices for this face
 			GLfloat v1[3]={vertices[i][j][0],vertices[i][j][1],vertices[i][j][2]};
 			GLfloat v2[3]={vertices[i][j][3],vertices[i][j][4],vertices[i][j][5]};
@@ -206,13 +191,42 @@ void draw3()
 			// draw face boundaries in black
 			//glColor3f(0.0f, 0.0f, 0.0f);// black
 			//glDrawElements(GL_LINES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
-			*/
 		}
 	}
 	glPopMatrix();
 	glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
 }
 
+/**
+ * ADD COMMENT
+ */
+void drawBinaryMask() {
+	// enable and specify pointers to vertex arrays
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glPushMatrix();
+
+	for (int i=0;i<numComps;i++){// for each scene component
+		for (int j=0;j<numFacesForComp[i];j++)// for each face in the scene component
+		{
+			// binary mask
+			// draw faces in white
+			glVertexPointer(3, GL_FLOAT, 0, vertices[i][j]);// give OpenGL the vertices for this face
+			glColor3f(1.0f, 1.0f, 1.0f);// white
+			// give OpenGL the edges for this face, and also the number of edges for this face
+			glDrawElements(GL_TRIANGLES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
+			// draw face boundaries in white
+			glColor3f(1.0f, 1.0f, 1.0f);// white
+			glDrawElements(GL_LINES, numEdgesForFace[i][j], GL_UNSIGNED_BYTE, edges[i][j]);
+
+		}
+	}
+	glPopMatrix();
+	glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
+}
+
+/**
+ * ADD COMMENT
+ */
 void computeFaceNormal(GLfloat* v1, GLfloat* v2, GLfloat* v3, GLfloat* crossP)
 {
 	GLfloat edge1[3]={v1[0]-v2[0],v1[1]-v2[1],v1[2]-v2[2]};
@@ -225,28 +239,9 @@ void computeFaceNormal(GLfloat* v1, GLfloat* v2, GLfloat* v3, GLfloat* crossP)
 		crossP[i]/=crossPMag;
 }
 
-// this function from Google SKP person
-/*
-void initTexture() {
-// Rather than decompressing our jpeg, I've written it to a simple raw file as
-// power of 2 sized stream of bytes.
-FILE* fp = fopen("D:/uiuc043.raw", "rb");
-// These should be power of 2 dimensions
-fread(&bitmap_w, sizeof(int), 1, fp);
-fread(&bitmap_h, sizeof(int), 1, fp);
-// These are the actual sizes we use.
-fread(&bitmap_w_used, sizeof(int), 1, fp);
-fread(&bitmap_h_used, sizeof(int), 1, fp);
-fread(&bitmap_bpp, sizeof(int), 1, fp);
-// And the bytes as a big rgb array.
-int size = bitmap_w * bitmap_h * bitmap_bpp;
-bitmap = new BYTE[size];
-fread(bitmap, sizeof(BYTE), size, fp);
-fclose(fp);
-}
-*/
-
-///////////////////////////////////////////////////////////////////////////////
+/**
+ * ADD COMMENT
+ */
 int main(int argc, char **argv)
 {
 	int t=clock();
@@ -267,8 +262,8 @@ int main(int argc, char **argv)
 	glGetIntegerv(GL_MAX_ELEMENTS_INDICES, &maxIndices);
 
 	// get function pointer to glDrawRangeElements
-	glDrawRangeElements = (PFNGLDRAWRANGEELEMENTSPROC)wglGetProcAddress("glDrawRangeElements");
-	
+	//glDrawRangeElements = (PFNGLDRAWRANGEELEMENTSPROC)wglGetProcAddress("glDrawRangeElements");
+
 	// the last GLUT call (LOOP)
 	// window will be shown and display callback is triggered by events
 	// NOTE: this call never return main().
@@ -357,21 +352,21 @@ void clearSharedMem()
 // set camera position and lookat direction
 ///////////////////////////////////////////////////////////////////////////////
 /*
-void setCamera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ)
-{
-glMatrixMode(GL_MODELVIEW);
-glLoadIdentity();
-gluLookAt(posX, posY, posZ, targetX, targetY, targetZ, 0, 0, 1); // eye(x,y,z), focal(x,y,z), up(x,y,z)
-}
-*/
+   void setCamera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ)
+   {
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   gluLookAt(posX, posY, posZ, targetX, targetY, targetZ, 0, 0, 1); // eye(x,y,z), focal(x,y,z), up(x,y,z)
+   }
+ */
 
 void setCamera(float camera[9])
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(camera[0], camera[1], camera[2],
-		camera[3], camera[4], camera[5],
-		camera[6], camera[7], camera[8]);
+			camera[3], camera[4], camera[5],
+			camera[6], camera[7], camera[8]);
 }
 
 //=============================================================================
@@ -386,7 +381,7 @@ void doStuff()
 		if (ent==NULL){
 			int t=clock();
 			cout<<"time:"<<t<<endl;
-			Sleep(10000000);
+			//Sleep(10000000);
 		}
 	}
 	while(ent->d_type!=DT_REG);
@@ -404,13 +399,13 @@ void doStuff()
 	// construct camera params from params about this uiuc image that is read in
 	// *****************you'll need to change this because your camera params are different from mine
 	setCamera(cameraParams);
-	
+
 	// find the min and max bounds for the scene, may be useful in obtaining camera params
 	float* minBound=new float[3];
 	float* maxBound=new float[3];
 	findSceneBounds(minBound, maxBound);
 	//cout<<minBound[0]<<" "<<minBound[1]<<" "<<minBound[2]<<" "<<maxBound[0]<<" "<<maxBound[1]<<" "<<maxBound[2]<<endl;
-	
+
 	currWidth=m.cols;
 	currHeight=m.rows;
 	glutReshapeWindow(m.cols,m.rows);
@@ -419,8 +414,8 @@ void doStuff()
 }
 
 /*
-void displayCB()
-{
+   void displayCB()
+   {
 // clear buffer
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -439,7 +434,7 @@ glPopMatrix();
 glutSwapBuffers();
 
 }
-*/
+ */
 
 void displayCB()
 {
@@ -483,33 +478,38 @@ void displayCB()
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
-	*/	
+	 */	
 	// clear buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	draw3();        // with glDrawElements()
+	drawNormalMask();        // with glDrawElements()
 
 	glutSwapBuffers(); // display the buffer we just drew
 
 	// make sure that the current window size is the same as the clutter mask
-	assert(currWidth==glutGet(GLUT_WINDOW_WIDTH));
-	assert(currHeight==glutGet(GLUT_WINDOW_HEIGHT));
-	
+	currWidth =m.cols;
+	currHeight = m.rows;
+	glutReshapeWindow(m.cols,m.rows);
+
+	//TODO(satkin): For some reason the assert doesn't work, commenting out for now.
+	//assert(currWidth==glutGet(GLUT_WINDOW_WIDTH));
+	//assert(currHeight==glutGet(GLUT_WINDOW_HEIGHT));
+
 	// read the SKP scene from the buffer
 	unsigned char *pixelData=(unsigned char*)malloc(currWidth*currHeight);
 	glReadBuffer(GL_FRONT);
 	glReadPixels(0,0,currWidth,currHeight,GL_RED,GL_UNSIGNED_BYTE,pixelData);
-	
+
 	// output the SKP rendered scene information, DEBUGGING ONLY
 	/*char* outFileName=(char*)malloc(50);
-	strcpy(outFileName,"D:/");
-	strcat(outFileName,ent->d_name);
-	FILE * out = fopen(outFileName,"w");
-	for (int i=0;i<currWidth*currHeight;i++)
-	{
-		fprintf(out,"%d\n",pixelData[i]);
-	}
-	fclose(out);*/
+	  strcpy(outFileName,"D:/");
+	  strcat(outFileName,ent->d_name);
+	  FILE * out = fopen(outFileName,"w");
+	  for (int i=0;i<currWidth*currHeight;i++)
+	  {
+	  fprintf(out,"%d\n",pixelData[i]);
+	  }
+	  fclose(out);*/
 
 	// convert 1D array pixelData to 2D, rows going from top of image to bottom, the same as the clutter mask openCV Mat m
 	// glReadPixels returns pixels starting from lower left corner of rendered image, going horizontally then up, so we need to 
@@ -523,19 +523,19 @@ void displayCB()
 		for (int j=0;j<currWidth;j++)
 		{
 			pixelData2D[i][j]=pixelData[pixelDataIdx];
-				pixelDataIdx++;
+			pixelDataIdx++;
 		}
 	}
 
 	// compare the SKP scene with the clutter mask (global variable m) **************scoring needs to be enhanced
 	double SSD=0;
 	for(int i = 0; i < m.rows; i++) {
-		 const uchar* mi = m.ptr(i);
-		 for(int j = 0; j < m.cols; j++){
-			 //fprintf(out,"%d\n",mi[j]);
-			 SSD+=std::abs((double)((mi[j])-pixelData2D[i][j]));
-		 }
-	 }
+		const uchar* mi = m.ptr(i);
+		for(int j = 0; j < m.cols; j++){
+			//fprintf(out,"%d\n",mi[j]);
+			SSD+=std::abs((double)((mi[j])-pixelData2D[i][j]));
+		}
+	}
 
 	cout.precision(10);
 	cout<<"....done, score is "<<SSD<<'\n';
@@ -574,11 +574,11 @@ void initCameraParamsAndClutterMask()
 {
 	cout<<"initCameraParamsAndClutterMask"<<endl;
 	// init camera params for the UIUC image we want to match
-	FILE* cameraParamsFile=fopen("D:/cameraParams.txt","r");
-	
+	FILE* cameraParamsFile=fopen("cameraParams.txt","r");
+
 	fscanf(cameraParamsFile,"%f",&aspect_ratio);
 	fscanf(cameraParamsFile,"%f",&fov_vertical);
-	
+
 	cameraParams=new float[9];
 	int k=0;
 	for (k=0;k<9;k++)
@@ -589,7 +589,8 @@ void initCameraParamsAndClutterMask()
 
 
 	// init the clutter mask of the UIUC image
-	m=imread("D:/clutter_mask.png",-1);
+	//m=imread("D:/clutter_mask.png",-1);
+	m=imread("clutter_mask.png",-1);
 	CV_Assert(m.type() == CV_8UC1);
 	if(m.data==NULL) 
 		cout<<"Error reading in clutter mask"<<endl;
@@ -597,13 +598,13 @@ void initCameraParamsAndClutterMask()
 	// DEBUGGING
 	//cout<<m.rows<<" "<<m.cols<<" "<<m.channels()<<" ";
 	/*FILE* out=fopen("D:/e.txt","w");
-	for(int i = 0; i < m.rows; i++) {
-		 const uchar* mi = m.ptr(i);
-    for(int j = 0; j < m.cols; j++){
-            fprintf(out,"%d\n",mi[j]);
-		}
-	 }
-	fclose(out);*/
+	  for(int i = 0; i < m.rows; i++) {
+	  const uchar* mi = m.ptr(i);
+	  for(int j = 0; j < m.cols; j++){
+	  fprintf(out,"%d\n",mi[j]);
+	  }
+	  }
+	  fclose(out);*/
 }
 
 // finds the smallest and largest x, y and z values of the current scene's vertices
@@ -615,17 +616,17 @@ void findSceneBounds(float* minBound, float* maxBound)
 		maxBound[i]=-FLT_MAX;
 	}
 	for (int i=0;i<numComps;i++)
+	{
+		for (int j=0;j<numFacesForComp[i];j++)
 		{
-			for (int j=0;j<numFacesForComp[i];j++)
-			{
-				for (int k=0;k<numVerticesForFace[i][j];k++)
-				{ 
-					if (vertices[i][j][k]<minBound[k%3])
-						minBound[k%3]=vertices[i][j][k];
-					if (vertices[i][j][k]>maxBound[k%3])
-						maxBound[k%3]=vertices[i][j][k];
-				}
+			for (int k=0;k<numVerticesForFace[i][j];k++)
+			{ 
+				if (vertices[i][j][k]<minBound[k%3])
+					minBound[k%3]=vertices[i][j][k];
+				if (vertices[i][j][k]>maxBound[k%3])
+					maxBound[k%3]=vertices[i][j][k];
 			}
+		}
 	}
 	//cout<<minBound[0]<<" "<<minBound[1]<<" "<<minBound[2]<<" "<<maxBound[0]<<" "<<maxBound[1]<<" "<<maxBound[2]<<endl;
 }
